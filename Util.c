@@ -84,6 +84,42 @@ double findWorst(const double *a, int NS){
     }
     return worst;
 }
+
+/**
+ * find the minimal value in a vector
+ * \param a an array
+ * \param NS the number of solutions/size of a vector
+ * \return a array with array b's elements implemented
+ */
+int bestIndex(const double *a, int NS){
+    double best = DBL_MAX;
+    int index = -1;
+    for (int i = 0; i < NS; ++i) {
+        if (a[i] < best) {
+            best = a[i];
+            index = i;
+        }
+    }
+    return index;
+}
+
+/**
+ * find the worst value in a vector
+ * \param a an array
+ * \param NS the number of solutions/size of a vector
+ * \return a array with array b's elements implemented
+ */
+int worstIndex(const double *a, int NS){
+    double worst = DBL_MIN;
+    int index = -1;
+    for (int i = 0; i < NS; ++i) {
+        if (a[i] > worst) {
+            worst = a[i];
+            index = i;
+        }
+    }
+    return index;
+}
 /**
  * copy a arrays contents to another
  * \param a a double array

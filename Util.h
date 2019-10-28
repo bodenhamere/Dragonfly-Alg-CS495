@@ -67,6 +67,11 @@ double findBest(const double *a,int NS);
  */
 double findWorst(const double *a, int NS);
 
+
+int bestIndex(const double *a, int NS);
+
+int worstIndex(const double *a, int NS);
+
 /**
  * copy a arrays contents to another
  * \param a a double array

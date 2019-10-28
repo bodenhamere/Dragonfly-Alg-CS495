@@ -5,7 +5,6 @@
 #ifndef DA_495_DA_H
 #define DA_495_DA_H
 
-#include <rpcndr.h>
 #include "Util.h"
 
 /**
@@ -24,6 +23,8 @@ typedef struct _DA1 {
     double weight; //!< a weight
     double food; //!< best solution
     double enemy; //! worst solution
+    int foodPos; //!< best solution
+    int enemyPos; //! worst solution
     double **step; //!< direction of the movement of the dragonflies
     double *sVector; //!< Separation array
     double *aVector; //!< Alignment array
@@ -32,8 +33,6 @@ typedef struct _DA1 {
     double *eVector; //!< enemy array
     double *o; //!< distance array
     int numNeighbors; //!< number of neighbors within the population
-    //   double **updatedPop; //!< new population
-  //  double *newFit; //!< new fitness of newPop
     double **neighborsStep; //!< step
     double **neighborsPop;//!<
 } DA;
@@ -44,19 +43,19 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
 
 void updateWeights(DA *myDA, initData *myData, int iter, int maxIter);
 
-void calculateVectors(DA *myDA, initData *myData, int NS, int i);
+void calculateVectors(DA *myDA, initData *myData, int NS, int DIM, int i);
 
 void separation(DA *myDA, initData *myData, int NS, int t);
 
-void alignment(DA *myDA, initData *myData, int NS, int t);
+void alignment(DA *myDA, int NS, int t);
 
 void cohesion(DA *myDA, initData *myData, int NS, int t);
 
-void attraction(DA *myDA, initData *myData, int t);
+void attraction(DA *myDA, initData *myData, int i, int DIM);
 
-void distraction(DA *myDA, initData *myData, int t);
+void distraction(DA *myDA, initData *myData, int i, int DIM);
 
-void updateStepPositon(DA *myDA, initData *myData, int NS, int i, int DIM);
+void updateStepPosition(DA *myDA, initData *myData, int i, int DIM);
 
 void randomWalk(DA *myDA, initData *myData, int i, int j, int DIM);
 
@@ -64,10 +63,12 @@ double levyFlight(int DIM);
 
 int factorial(int DIM);
 
-boolean lessR(DA *myDA, int DIM);
+int lessR(DA *myDA, int DIM);
 
-double distance(DA *myDA, initData *myData, int i, int j, int DIM);
+int lessR2(DA *myDA, int DIM);
 
-double findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS);
+void distance(double *returnArr, double **a, double **b, int i, int j, int DIM);
+
+void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS);
 
 #endif //DA_495_DA_H
