@@ -137,8 +137,8 @@ void calculateVectors(DA *myDA, initData *myData, int NS, int DIM, int i) {
     separation(myDA, myData, DIM, i);
     alignment(myDA, DIM, i);
     cohesion(myDA, myData, DIM, i);
-    attraction(myDA, myData, i, NS, DIM);
-    distraction(myDA, myData, i, NS, DIM);
+    attraction(myDA, myData, i, DIM);
+    distraction(myDA, myData, i, DIM);
 }
 
 void separation(DA *myDA, initData *myData, int DIM, int i) {
