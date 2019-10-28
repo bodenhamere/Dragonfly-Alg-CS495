@@ -52,6 +52,8 @@ void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCou
         myDA->fVector = singleArray(NS);
         myDA->eVector = singleArray(NS);
         myDA->o = singleArray(DIM);
+        myDA->neighborsStep = createDblArray(NS, DIM);
+        myDA->neighborsPop = createDblArray(NS, DIM);
 
         // start the algorithm
         startDA(myDA, myData, NS, DIM, iterations, fitnessCounter, DAOut);
@@ -248,7 +250,8 @@ void updateStepPosition(DA *myDA, initData *myData, int i, int DIM) {
 
 void distance(double *returnArr, double **a, double **b, int i, int j, int DIM) {
     for (int k = 0; k < DIM; ++k) {
-        returnArr[i] = pow(sqrt(a[i][k] - b[j][k]), 2);
+        // can not square root a negative, should i do absolute value?
+        returnArr[k] = pow(sqrt(a[i][k] - b[j][k]), 2);
     }
 }
 

@@ -33,8 +33,8 @@ typedef struct _DA1 {
     double *eVector; //!< enemy array
     double *o; //!< distance array
     int numNeighbors; //!< number of neighbors within the population
-    double **neighborsStep; //!< step
-    double **neighborsPop;//!<
+    double **neighborsStep; //!< position of the step neighbors
+    double **neighborsPop;//!< position of the population neighbors
 } DA;
 
 void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCounter);
