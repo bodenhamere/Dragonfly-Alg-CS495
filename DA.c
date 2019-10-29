@@ -262,7 +262,7 @@ double * distance(double *returnArr, double **a, double **b, int i, int j, int D
         printf("%lf, ",returnArr[k]);
     }
     printf("\n");
-    printf("\n DONE WITH FIRST ARRAY \n");
+    printf("\n DONE WITH UPDATING \n");
     return returnArr;
 }
 
@@ -271,6 +271,12 @@ void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
     int index = 0;
     myDA->numNeighbors = 0;
     for (int k = 0; k < NS; ++k) {
+            for (int l = 0; l < DIM; ++l) {
+                printf("%lf, ",myDA->o[l]);
+            }
+            printf("\n");
+
+        printf("end of o array\n");
         myDA->o = distance(myDA->o, myData->population, myData->population, i, k, DIM);
         if (lessR(myDA, DIM)) {
             index++;
@@ -280,6 +286,7 @@ void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
                 myDA->neighborsStep[index][j] = myDA->step[k][j];
             }
         }
+        free(myDA->o);
     }
 }
 
