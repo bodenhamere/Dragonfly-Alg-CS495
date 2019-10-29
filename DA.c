@@ -55,6 +55,14 @@ void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCou
         myDA->neighborsStep = createDblArray(NS, DIM);
         myDA->neighborsPop = createDblArray(NS, DIM);
 
+//        for (int i = 0; i < NS; ++i) {
+//            for (int j = 0; j < DIM; ++j) {
+//                printf("%lf, ",myData->population[i][j]);
+//            }
+//            printf("\n");
+//
+//        }
+//        printf("end of pop");
         // start the algorithm
         startDA(myDA, myData, NS, DIM, iterations, fitnessCounter, DAOut);
     }
@@ -196,7 +204,7 @@ void cohesion(DA *myDA, initData *myData, int DIM, int i) {
 }
 
 void attraction(DA *myDA, initData *myData, int i, int DIM) {
-    distance(myDA->o, myData->population, myData->population, i, myDA->foodPos, DIM);
+    myDA->o = distance(myDA->o, myData->population, myData->population, i, myDA->foodPos, DIM);
     if (lessR2(myDA, DIM)) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
             myDA->fVector[j] = myData->population[myDA->foodPos][j] - myData->population[i][j];
@@ -210,7 +218,7 @@ void attraction(DA *myDA, initData *myData, int i, int DIM) {
 }
 
 void distraction(DA *myDA, initData *myData, int i, int DIM) {
-    distance(myDA->o, myData->population, myData->population, i, myDA->enemyPos, DIM);
+    myDA->o = distance(myDA->o, myData->population, myData->population, i, myDA->enemyPos, DIM);
     if (lessR2(myDA, DIM)) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
             myDA->eVector[j] = myData->population[myDA->enemyPos][j] + myData->population[i][j];
@@ -248,11 +256,14 @@ void updateStepPosition(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
-void distance(double *returnArr, double **a, double **b, int i, int j, int DIM) {
+double * distance(double *returnArr, double **a, double **b, int i, int j, int DIM) {
     for (int k = 0; k < DIM; ++k) {
-        // can not square root a negative, should i do absolute value?
-        returnArr[k] = pow(sqrt(a[i][k] - b[j][k]), 2);
+        returnArr[k] = sqrt(pow((a[i][k] - b[j][k]),2));
+        printf("%lf, ",returnArr[k]);
     }
+    printf("\n");
+    printf("\n DONE WITH FIRST ARRAY \n");
+    return returnArr;
 }
 
 // find the neighboring solutions
@@ -260,7 +271,7 @@ void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
     int index = 0;
     myDA->numNeighbors = 0;
     for (int k = 0; k < NS; ++k) {
-        distance(myDA->o, myData->population, myData->population, i, k, DIM);
+        myDA->o = distance(myDA->o, myData->population, myData->population, i, k, DIM);
         if (lessR(myDA, DIM)) {
             index++;
             myDA->numNeighbors++;
