@@ -40,22 +40,23 @@ void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCou
 
         // fill our population and step vectors with random numbers
         // and get the fitness of our population
-        myData->population = fillIn(myData->population, DIM, NS, myData->min, myData->max);
-        myData->fitness = getFun(myData->fitness, myData->population, DIM, NS, myData->functionNumber);
+        myData->population = fillIn(myData->population, NS, DIM, myData->min, myData->max);
+        myData->fitness = getFun(myData->fitness, myData->population, NS, DIM, myData->functionNumber);
         myDA->step = createDblArray(NS, DIM);
-        myDA->step = fillIn(myDA->step, DIM, NS, myData->min, myData->max);
+        myDA->step = fillIn(myDA->step, NS, DIM, myData->min, myData->max);
 
         // initialize the size of the arrays
-        myDA->sVector = singleArray(NS);
-        myDA->aVector = singleArray(NS);
-        myDA->cVector = singleArray(NS);
-        myDA->fVector = singleArray(NS);
-        myDA->eVector = singleArray(NS);
+        myDA->sVector = singleArray(DIM);
+        myDA->aVector = singleArray(DIM);
+        myDA->cVector = singleArray(DIM);
+        myDA->fVector = singleArray(DIM);
+        myDA->eVector = singleArray(DIM);
         myDA->o = singleArray(DIM);
         myDA->neighborsStep = createDblArray(NS, DIM);
         myDA->neighborsPop = createDblArray(NS, DIM);
 
 //        for (int i = 0; i < NS; ++i) {
+//            printf("[%d] ", i);
 //            for (int j = 0; j < DIM; ++j) {
 //                printf("%lf, ",myData->population[i][j]);
 //            }
@@ -143,6 +144,39 @@ void updateWeights(DA *myDA, initData *myData, int iter, int maxIter) {
     myDA->e = myDA->weight;
 }
 
+// find the neighboring solutions
+void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
+    int index = 0;
+    myDA->numNeighbors = 0;
+    for (int k = 0; k < NS; ++k) {
+//        for (int l = 0; l < DIM; ++l) {
+//            printf("%lf, ",myDA->o[l]);
+//        }
+//        printf("\n");
+//
+//        printf("end of o array\n");
+        distance(myDA->o, myData->population, myData->population, i, k, DIM);
+        if (lessR(myDA, DIM)) {
+            index++;
+            myDA->numNeighbors++;
+            for (int j = 0; j < DIM; ++j) {
+                myDA->neighborsPop[index][j] = myData->population[k][j];
+                myDA->neighborsStep[index][j] = myDA->step[k][j];
+            }
+        }
+        free(myDA->o);
+    }
+}
+
+void distance(double *returnArr, double **a, double **b, int i, int j, int DIM) {
+    for (int k = 0; k < DIM; ++k) {
+        returnArr[k] = sqrt(pow((a[i][k] - b[j][k]),2));
+//        printf("%lf, ",returnArr[k]);
+    }
+//    printf("\n");
+//    printf("\n DONE WITH UPDATING \n");
+}
+
 void calculateVectors(DA *myDA, initData *myData, int NS, int DIM, int i) {
     separation(myDA, myData, DIM, i);
     alignment(myDA, DIM, i);
@@ -161,7 +195,6 @@ void separation(DA *myDA, initData *myData, int DIM, int i) {
         }
     } else {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
-
             myDA->sVector[j] = 0;
         }
     }
@@ -204,7 +237,7 @@ void cohesion(DA *myDA, initData *myData, int DIM, int i) {
 }
 
 void attraction(DA *myDA, initData *myData, int i, int DIM) {
-    myDA->o = distance(myDA->o, myData->population, myData->population, i, myDA->foodPos, DIM);
+    distance(myDA->o, myData->population, myData->population, i, myDA->foodPos, DIM);
     if (lessR2(myDA, DIM)) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
             myDA->fVector[j] = myData->population[myDA->foodPos][j] - myData->population[i][j];
@@ -218,7 +251,7 @@ void attraction(DA *myDA, initData *myData, int i, int DIM) {
 }
 
 void distraction(DA *myDA, initData *myData, int i, int DIM) {
-    myDA->o = distance(myDA->o, myData->population, myData->population, i, myDA->enemyPos, DIM);
+    distance(myDA->o, myData->population, myData->population, i, myDA->enemyPos, DIM);
     if (lessR2(myDA, DIM)) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
             myDA->eVector[j] = myData->population[myDA->enemyPos][j] + myData->population[i][j];
@@ -256,39 +289,6 @@ void updateStepPosition(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
-double * distance(double *returnArr, double **a, double **b, int i, int j, int DIM) {
-    for (int k = 0; k < DIM; ++k) {
-        returnArr[k] = sqrt(pow((a[i][k] - b[j][k]),2));
-        printf("%lf, ",returnArr[k]);
-    }
-    printf("\n");
-    printf("\n DONE WITH UPDATING \n");
-    return returnArr;
-}
-
-// find the neighboring solutions
-void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
-    int index = 0;
-    myDA->numNeighbors = 0;
-    for (int k = 0; k < NS; ++k) {
-            for (int l = 0; l < DIM; ++l) {
-                printf("%lf, ",myDA->o[l]);
-            }
-            printf("\n");
-
-        printf("end of o array\n");
-        myDA->o = distance(myDA->o, myData->population, myData->population, i, k, DIM);
-        if (lessR(myDA, DIM)) {
-            index++;
-            myDA->numNeighbors++;
-            for (int j = 0; j < DIM; ++j) {
-                myDA->neighborsPop[index][j] = myData->population[k][j];
-                myDA->neighborsStep[index][j] = myDA->step[k][j];
-            }
-        }
-        free(myDA->o);
-    }
-}
 
 // if our vector distance is within the radius of our population
 // then the vector is within the distance of our population

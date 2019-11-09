@@ -22,10 +22,10 @@
  * \param row the size of the rows of the array
  * \return double pointer array
  */
-double ** createDblArray (int col, int row){
-    double ** matrix =(double **)calloc(col,sizeof(double*));
-    for(int i=0; i < col; i++){
-        matrix[i] = singleArray(row);
+double **createDblArray(int row, int col) {
+    double **matrix = (double **) calloc(row, sizeof(double *));
+    for (int i = 0; i < row; i++) {
+        matrix[i] = singleArray(col);
     }
     return matrix;
 }
@@ -36,8 +36,8 @@ double ** createDblArray (int col, int row){
  * \param n the size of the rows of the array
  * \return single pointer array
  */
-double * singleArray(int n){
-    double * arr = (double *) calloc( n, sizeof(double));
+double *singleArray(int n) {
+    double *arr = (double *) calloc(n, sizeof(double));
     return arr;
 }
 
@@ -50,10 +50,10 @@ double * singleArray(int n){
  * \param max the maximum size of the random numbers
  * \return double pointer array
  */
-double ** fillIn (double ** arr, int row, int col,double min, double max){
-    for (int i = 0; i < col; i++) {
-        for (int j = 0; j < row; j++) {
-            arr[i][j] = (max-(min))*(genrand_real1())+min;
+double **fillIn(double **arr, int row, int col, double min, double max) {
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            arr[i][j] = (max - (min)) * (genrand_real1()) + min;
         }
     }
     return arr;
@@ -64,9 +64,9 @@ double ** fillIn (double ** arr, int row, int col,double min, double max){
  * \param matrix double pointer array
  * \param row the size of the rows of the array
  */
-void  freeMem(int row, double ** matrix){
-    for(int i=0;i<row;i++){
-        free( matrix[i] );
+void freeMem(int row, double **matrix) {
+    for (int i = 0; i < row; i++) {
+        free(matrix[i]);
     }
     free(matrix);
 }

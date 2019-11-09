@@ -67,7 +67,7 @@ int lessR(DA *myDA, int DIM);
 
 int lessR2(DA *myDA, int DIM);
 
-double * distance(double *returnArr, double **a, double **b, int i, int j, int DIM);
+void distance(double *returnArr, double **a, double **b, int i, int j, int DIM);
 
 void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS);
 
