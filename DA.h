@@ -43,8 +43,6 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
 
 void updateWeights(DA *myDA, initData *myData, int iter, int maxIter);
 
-void calculateVectors(DA *myDA, initData *myData, int NS, int DIM, int i);
-
 void separation(DA *myDA, initData *myData, int NS, int t);
 
 void alignment(DA *myDA, int NS, int t);
@@ -67,7 +65,7 @@ int lessR(DA *myDA, int DIM);
 
 int lessR2(DA *myDA, int DIM);
 
-void distance(double *returnArr, double **a, double **b, int i, int j, int DIM);
+void distance(DA *myDA, initData *myData, int i, int j, int DIM);
 
 void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS);
 
