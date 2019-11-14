@@ -58,5 +58,8 @@ int main() {
     // starting DA
     readInput(myData, NS, DIM, iterations, fitnessCallCounter);
 
+    // free memory
+    free(myData->fitness);
+    freeMem(NS, myData->population);
     return 0;
 }

@@ -25,6 +25,8 @@ typedef struct _DA1 {
     double enemy; //! worst solution
     int foodPos; //!< best solution
     int enemyPos; //! worst solution
+    double *worstArr; //!< best solution
+    double *bestArr; //! worst solution
     double **step; //!< direction of the movement of the dragonflies
     double *sVector; //!< Separation array
     double *aVector; //!< Alignment array

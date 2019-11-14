@@ -55,22 +55,16 @@ double *replaceArray(double *a, const double *b, int NS);
  * find the minimal value in a vector
  * \param a an array
  * \param NS the number of solutions/size of a vector
- * \return a array with array b's elements implemented
  */
-double findBest(const double *a,int NS);
+void findBest(double* bestArr, const double *a,int NS);
 
 /**
  * find the minimal value in a vector
  * \param a an array
  * \param NS the number of solutions/size of a vector
- * \return a array with array b's elements implemented
  */
-double findWorst(const double *a, int NS);
+void findWorst(double* worstArr, const double *a, int NS);
 
-
-int bestIndex(const double *a, int NS);
-
-int worstIndex(const double *a, int NS);
 
 /**
  * copy a arrays contents to another

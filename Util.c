@@ -59,14 +59,17 @@ double *replaceArray(double *a, const double *b, const int NS) {
  * \param NS the number of solutions/size of a vector
  * \return a array with array b's elements implemented
  */
-double findBest(const double *a, int NS){
+void findBest(double* bestArr, const double *a, int NS){
     double best = DBL_MAX;
+    int index = -1;
     for (int i = 0; i < NS; ++i) {
-        if (a[i] < best) {
+        if (a[i] <= best) {
             best = a[i];
+            index = i;
         }
     }
-    return best;
+    bestArr[0] = best;
+    bestArr[1] = index;
 }
 
 /**
@@ -75,51 +78,19 @@ double findBest(const double *a, int NS){
  * \param NS the number of solutions/size of a vector
  * \return a array with array b's elements implemented
  */
-double findWorst(const double *a, int NS){
-    double worst = DBL_MIN;
-    for (int i = 0; i < NS; ++i) {
-        if (a[i] > worst) {
-            worst = a[i];
-        }
-    }
-    return worst;
-}
-
-/**
- * find the minimal value in a vector
- * \param a an array
- * \param NS the number of solutions/size of a vector
- * \return a array with array b's elements implemented
- */
-int bestIndex(const double *a, int NS){
-    double best = DBL_MAX;
-    int index = -1;
-    for (int i = 0; i < NS; ++i) {
-        if (a[i] < best) {
-            best = a[i];
-            index = i;
-        }
-    }
-    return index;
-}
-
-/**
- * find the worst value in a vector
- * \param a an array
- * \param NS the number of solutions/size of a vector
- * \return a array with array b's elements implemented
- */
-int worstIndex(const double *a, int NS){
+void findWorst(double* worstArr, const double *a, int NS){
     double worst = DBL_MIN;
     int index = -1;
     for (int i = 0; i < NS; ++i) {
-        if (a[i] > worst) {
+        if (a[i] >= worst) {
             worst = a[i];
             index = i;
         }
     }
-    return index;
+    worstArr[0] = worst;
+    worstArr[1] = index;
 }
+
 /**
  * copy a arrays contents to another
  * \param a a double array
