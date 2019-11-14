@@ -153,3 +153,10 @@ void printSingle(FILE *file, double *a, int DIM){
     }
     fprintf(file, "\n");
 }
+
+void checkBounds(initData *myData, double array){
+    if (array > myData->max)
+        array = myData->max;
+    if (array < myData->min)
+        array = myData->min;
+}

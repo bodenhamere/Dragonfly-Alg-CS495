@@ -51,15 +51,15 @@ int main() {
     initData *myData;
     myData = (initData *) calloc(1, sizeof(initData));
 
-    // initializing the size of population and fitness
-    myData->population = createDblArray(NS, DIM);
-    myData->fitness = singleArray(NS);
+//    // initializing the size of population and fitness
+//    myData->population = createDblArray(NS, DIM);
+//    myData->fitness = singleArray(NS);
 
     // starting DA
     readInput(myData, NS, DIM, iterations, fitnessCallCounter);
 
-    // free memory
-    free(myData->fitness);
-    freeMem(NS, myData->population);
+//    // free memory
+//    free(myData->fitness);
+//    freeMem(NS, myData->population);
     return 0;
 }

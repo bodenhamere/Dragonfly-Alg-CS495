@@ -103,4 +103,5 @@ void printDblDim(FILE *file, double **a, int DIM, int NS);
  */
 void printSingle(FILE *file, double *a, int DIM);
 
+void checkBounds(initData *myData, double array);
 #endif //DA_495_UTIL_H
