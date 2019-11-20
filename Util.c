@@ -79,7 +79,7 @@ void findBest(double* bestArr, const double *a, int NS){
  * \return a array with array b's elements implemented
  */
 void findWorst(double* worstArr, const double *a, int NS){
-    double worst = DBL_MIN;
+    double worst = -DBL_MAX;
     int index = -1;
     for (int i = 0; i < NS; ++i) {
         if (a[i] >= worst) {
