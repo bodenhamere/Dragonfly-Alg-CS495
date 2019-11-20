@@ -51,7 +51,18 @@ void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCou
         // and get the fitness of our population
         myData->population = fillIn(myData->population, NS, DIM, myData->min, myData->max);
         myDA->step = fillIn(myDA->step, NS, DIM, myData->min, myData->max);
+        myData->fitness = getFun(myData->fitness, myData->population, NS, DIM, myData->functionNumber);
 
+
+        // enemy and food value
+        findWorst(myDA->worstArr, myData->fitness, NS);
+        findBest(myDA->bestArr, myData->fitness, NS);
+        myDA->enemy = myDA->worstArr[0];
+        myDA->food = myDA->bestArr[0];
+
+        // enemy and food position
+        myDA->foodPos = myDA->worstArr[1];
+        myDA->enemyPos = myDA->bestArr[1];
         // start the algorithm
         startDA(myDA, myData, NS, DIM, iterations, fitnessCounter, DAOut);
 
@@ -74,17 +85,17 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
         // update weights and radius
         updateWeights(myDA, myData, t, iterations);
 
-        myData->fitness = getFun(myData->fitness, myData->population, NS, DIM, myData->functionNumber);
-
-        // enemy and food value
-        findWorst(myDA->worstArr, myData->fitness, NS);
-        findBest(myDA->bestArr, myData->fitness, NS);
-        myDA->enemy = myDA->worstArr[0];
-        myDA->food = myDA->bestArr[0];
-
-        // enemy and food position
-        myDA->foodPos = myDA->worstArr[1];
-        myDA->enemyPos = myDA->bestArr[1];
+//        myData->fitness = getFun(myData->fitness, myData->population, NS, DIM, myData->functionNumber);
+//
+//        // enemy and food value
+//        findWorst(myDA->worstArr, myData->fitness, NS);
+//        findBest(myDA->bestArr, myData->fitness, NS);
+//        myDA->enemy = myDA->worstArr[0];
+//        myDA->food = myDA->bestArr[0];
+//
+//        // enemy and food position
+//        myDA->foodPos = myDA->worstArr[1];
+//        myDA->enemyPos = myDA->bestArr[1];
 
         for (int i = 0; i < NS; i++) {
             myDA->o = singleArray(DIM);
@@ -96,16 +107,21 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
             separation(myDA, myData, DIM, i);
             alignment(myDA, DIM, i);
             cohesion(myDA, myData, DIM, i);
-            attraction(myDA, myData, i, DIM);
             distraction(myDA, myData, i, DIM);
+            attraction(myDA, myData, i, DIM);
 
             //update velocity and position vectors
-            if (myDA->numNeighbors > 1) {
-                updateStepPosition(myDA, myData, i, DIM);
+            if (greaterR3(myDA, DIM)){
+                if (myDA->numNeighbors > 1) {
+                    updateStepPosition2(myDA, myData, i, DIM);
+                } else {
+                    // perform random walk
+                    randomWalk(myDA, myData, i, 0, DIM);
+                }
             } else {
-                // perform random walk
-                randomWalk(myDA, myData, i, 0, DIM);
+                updateStepPosition(myDA, myData, i, DIM);
             }
+
 
             // update the fitness of our new population
             myData->fitness[i] = getFunSingle(myData->fitness[i], myData->population[i], DIM, myData->functionNumber);
@@ -137,7 +153,7 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
         printf("%lf ", myDA->enemy);
         printf("\n");
 
-        fprintf(fileOut, "%lf, ", myDA->food);
+       // fprintf(fileOut, "%lf, ", myDA->food);
     }
     start = (((clock() - start)));
     printf("\nExperiment for %d took, %lf, Counter, %d\n",
@@ -241,6 +257,16 @@ void cohesion(DA *myDA, initData *myData, int DIM, int i) {
     }
 }
 
+void distraction(DA *myDA, initData *myData, int i, int DIM) {
+    myDA->eVector = singleArray(DIM);
+    distance(myDA, myData, i, myDA->enemyPos, DIM);
+    if (lessR2(myDA, DIM)) {
+        for (int j = 0; j < DIM; ++j) {
+            myDA->eVector[j] = myData->population[myDA->enemyPos][j] + myData->population[i][j];
+        }
+    }
+}
+
 void attraction(DA *myDA, initData *myData, int i, int DIM) {
     myDA->fVector = singleArray(DIM);
     distance(myDA, myData, i, myDA->foodPos, DIM);
@@ -251,15 +277,6 @@ void attraction(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
-void distraction(DA *myDA, initData *myData, int i, int DIM) {
-    myDA->eVector = singleArray(DIM);
-    distance(myDA, myData, i, myDA->enemyPos, DIM);
-    if (lessR2(myDA, DIM)) {
-        for (int j = 0; j < DIM; ++j) {
-            myDA->eVector[j] = myData->population[myDA->enemyPos][j] + myData->population[i][j];
-        }
-    }
-}
 
 void updateStepPosition(DA *myDA, initData *myData, int i, int DIM) {
     for (int t = 0; t < DIM; ++t) {
@@ -282,6 +299,25 @@ void updateStepPosition(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
+void updateStepPosition2(DA *myDA, initData *myData, int i, int DIM) {
+    for (int t = 0; t < DIM; ++t) {
+        // velocity matrix
+        myDA->step[i][t] = myDA->w * myDA->step[i][t] + genrand_real1() * myDA->sVector[t] + genrand_real1() * myDA->aVector[t] +
+                            genrand_real1() * myDA->cVector[t];
+
+        // if the new position is outside the range of
+        // the bounds, then make it equal to the bounds
+        checkBounds(myData, myDA->step[i][t]);
+
+        // position matrix
+        myData->population[i][t] = myData->population[i][t] + myDA->step[i][t];
+
+        // if the new population is outside the range of
+        // the bounds, then make it equal to the bounds
+        checkBounds(myData,myData->population[i][t]);
+
+    }
+}
 
 // if our vector distance is within the radius of our population
 // then the vector is within the distance of our population
@@ -307,6 +343,15 @@ int lessR2(DA *myDA, int DIM) {
     }
     if (counter == DIM-1) {
         return 1;
+    }
+    return 0;
+}
+
+int greaterR3(DA *myDA, int DIM) {
+    for (int i = 0; i < DIM; ++i) {
+        if (myDA->o[i] > myDA->r) {
+            return 1;
+        }
     }
     return 0;
 }

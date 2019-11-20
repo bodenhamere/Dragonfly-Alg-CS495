@@ -57,6 +57,8 @@ void distraction(DA *myDA, initData *myData, int i, int DIM);
 
 void updateStepPosition(DA *myDA, initData *myData, int i, int DIM);
 
+void updateStepPosition2(DA *myDA, initData *myData, int i, int DIM);
+
 void randomWalk(DA *myDA, initData *myData, int i, int j, int DIM);
 
 double levyFlight(int DIM);
@@ -66,6 +68,8 @@ int factorial(int DIM);
 int lessR(DA *myDA, int DIM);
 
 int lessR2(DA *myDA, int DIM);
+
+int greaterR3(DA *myDA, int DIM);
 
 void distance(DA *myDA, initData *myData, int i, int j, int DIM);
 
