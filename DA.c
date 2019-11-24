@@ -11,6 +11,7 @@
 #include "SelectFunctions.h"
 #include "mt19937ar.h"
 #include <math.h>
+#include <string.h>
 
 
 void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCounter) {
@@ -46,6 +47,14 @@ void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCou
         myDA->step = createDblArray(NS, DIM);
         myDA->worstArr = singleArray(2);
         myDA->bestArr = singleArray(2);
+        // Initialize the size of the neighboring arrays
+        myDA->neighborsStep = createDblArray(NS, DIM);
+        myDA->neighborsPop = createDblArray(NS, DIM);
+        myDA->sVector = singleArray(DIM);
+        myDA->aVector = singleArray(DIM);
+        myDA->cVector = singleArray(DIM);
+        myDA->eVector = singleArray(DIM);
+        myDA->fVector = singleArray(DIM);
 
         // fill our population and step vectors with random numbers
         // and get the fitness of our population
@@ -72,6 +81,14 @@ void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCou
         freeMem(NS, myDA->step);
         free(myData->fitness);
         freeMem(NS, myData->population);
+        freeMem(NS, myDA->neighborsStep);
+        freeMem(NS, myDA->neighborsPop);
+        free(myDA->sVector);
+        free(myDA->aVector);
+        free(myDA->cVector);
+        free(myDA->fVector);
+        free(myDA->eVector);
+        free(myDA->o);
     }
     fclose(funFile);
     fclose(DAOut);
@@ -81,21 +98,12 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
     // start the clock
     clock_t start;
     start = clock();
+    // arrays to hold the best and worst solutions
+    double *holdb = singleArray(iterations);
+    double *holdw = singleArray(iterations);
     for (int t = 0; t < iterations; t++) {
         // update weights and radius
         updateWeights(myDA, myData, t, iterations);
-
-//        myData->fitness = getFun(myData->fitness, myData->population, NS, DIM, myData->functionNumber);
-//
-//        // enemy and food value
-//        findWorst(myDA->worstArr, myData->fitness, NS);
-//        findBest(myDA->bestArr, myData->fitness, NS);
-//        myDA->enemy = myDA->worstArr[0];
-//        myDA->food = myDA->bestArr[0];
-//
-//        // enemy and food position
-//        myDA->foodPos = myDA->worstArr[1];
-//        myDA->enemyPos = myDA->bestArr[1];
 
         for (int i = 0; i < NS; i++) {
             myDA->o = singleArray(DIM);
@@ -137,14 +145,17 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
                 // enemy and food position
                 myDA->enemyPos = i;
             }
-            freeMem(NS, myDA->neighborsStep);
-            freeMem(NS, myDA->neighborsPop);
-            free(myDA->sVector);
-            free(myDA->aVector);
-            free(myDA->cVector);
-            free(myDA->fVector);
-            free(myDA->eVector);
-            free(myDA->o);
+
+            for (int j = 0; j < NS; ++j) {
+                memset(myDA->neighborsStep[j],0, sizeof(double));
+                memset(myDA->neighborsPop[j],0, sizeof(double));
+            }
+            memset(myDA->sVector,0, sizeof(double));
+            memset(myDA->aVector,0, sizeof(double));
+            memset(myDA->cVector,0, sizeof(double));
+            memset(myDA->fVector,0, sizeof(double));
+            memset(myDA->eVector,0, sizeof(double));
+            memset(myDA->o,0, sizeof(double));
 
         }
         printf("(%d)Best: ", t);
@@ -153,14 +164,20 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
         printf("%lf ", myDA->enemy);
         printf("\n");
 
-       // fprintf(fileOut, "%lf, ", myDA->food);
+        holdb[t] = myDA->food;
+        holdw[t] = myDA->enemy;
+
     }
+    printSingle(fileOut, holdb, iterations);
+    printSingle(fileOut, holdw, iterations);
     start = (((clock() - start)));
     printf("\nExperiment for %d took, %lf, Counter, %d\n",
            myData->functionNumber, ((((double) start) / CLOCKS_PER_SEC) * 1000), fitnessCounter);
 
-//    fprintf(fileOut, "\nExperiment for %d took, %lf, Counter, %d\n",
-//            myData->functionNumber, ((((double) start) / CLOCKS_PER_SEC) * 1000), fitnessCounter);
+    fprintf(fileOut, "\nExperiment for %d took, %lf, Counter, %d\n",
+            myData->functionNumber, ((((double) start) / CLOCKS_PER_SEC) * 1000), fitnessCounter);
+    free(holdb);
+    free(holdw);
 }
 
 void updateWeights(DA *myDA, initData *myData, int iter, int maxIter) {
@@ -181,9 +198,6 @@ void updateWeights(DA *myDA, initData *myData, int iter, int maxIter) {
 void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
     int index = 0;
     myDA->numNeighbors = 0;
-    // Initialize the size of the neighboring arrays
-    myDA->neighborsStep = createDblArray(NS, DIM);
-    myDA->neighborsPop = createDblArray(NS, DIM);
 
     for (int k = 0; k < NS; k++) {
         distance(myDA, myData, i, k, DIM);
@@ -205,7 +219,6 @@ void distance(DA *myDA, initData *myData, int i, int j, int DIM) {
 }
 
 void separation(DA *myDA, initData *myData, int DIM, int i) {
-    myDA->sVector = singleArray(DIM);
     if (myDA->numNeighbors > 1) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
             for (int k = 0; k < DIM; ++k) {
@@ -219,7 +232,6 @@ void separation(DA *myDA, initData *myData, int DIM, int i) {
 }
 
 void alignment(DA *myDA, int DIM, int i) {
-    myDA->aVector = singleArray(DIM);
     if (myDA->numNeighbors > 1) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
             for (int k = 0; k < DIM; k++) {
@@ -237,7 +249,6 @@ void alignment(DA *myDA, int DIM, int i) {
 }
 
 void cohesion(DA *myDA, initData *myData, int DIM, int i) {
-    myDA->cVector = singleArray(DIM);
     if (myDA->numNeighbors > 1) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
             for (int k = 0; k < DIM; k++) {
@@ -258,7 +269,6 @@ void cohesion(DA *myDA, initData *myData, int DIM, int i) {
 }
 
 void distraction(DA *myDA, initData *myData, int i, int DIM) {
-    myDA->eVector = singleArray(DIM);
     distance(myDA, myData, i, myDA->enemyPos, DIM);
     if (lessR2(myDA, DIM)) {
         for (int j = 0; j < DIM; ++j) {
@@ -268,7 +278,6 @@ void distraction(DA *myDA, initData *myData, int i, int DIM) {
 }
 
 void attraction(DA *myDA, initData *myData, int i, int DIM) {
-    myDA->fVector = singleArray(DIM);
     distance(myDA, myData, i, myDA->foodPos, DIM);
     if (lessR2(myDA, DIM)) {
         for (int j = 0; j < DIM; ++j) {

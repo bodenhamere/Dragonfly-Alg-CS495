@@ -51,15 +51,12 @@ int main() {
     initData *myData;
     myData = (initData *) calloc(1, sizeof(initData));
 
-//    // initializing the size of population and fitness
-//    myData->population = createDblArray(NS, DIM);
-//    myData->fitness = singleArray(NS);
-
     // starting DA
     readInput(myData, NS, DIM, iterations, fitnessCallCounter);
 
-//    // free memory
-//    free(myData->fitness);
-//    freeMem(NS, myData->population);
     return 0;
+    // # simulations = > 30 < 50
+    // 18 different *50 = 900
+    // write a script to launch each simulation
+    // create a python script to call it internally
 }
