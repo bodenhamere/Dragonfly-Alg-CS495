@@ -1,6 +1,15 @@
-//
-// Created by emyli on 10/16/2019.
-//
+/**
+ * @file main.c
+ */
+/**
+ * @author Emily Bodenhamer
+ *  CWU ID 41119306
+ *  CS 495
+ *  Date 9/15/2019
+ *
+ *  This project implements the Dragonfly meta-heuristic optimization algorithm.
+ *
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +22,15 @@
 #include <math.h>
 #include <string.h>
 
-
+/**
+ * Function that reads from the DA input file to
+ * initialize the structure variables for the DA algorithm
+ * @param iterations number of iterations to run the algorithm for
+ * @param fitnessCounter count how many times the fitness function was called
+ * @param myData Data structure pointer for initializing the bounds and which function to run
+ * @param NS number of solutions for a data type
+ * @param DIM number of dimensions for a data type
+ */
 void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCounter) {
     // initialize our DA struct
     DA *myDA;
@@ -94,6 +111,16 @@ void readInput(initData *myData, int NS, int DIM, int iterations, int fitnessCou
     fclose(DAOut);
 }
 
+/**
+ * Function that runs the DA algorithm
+ * @param fileOut output file for the fitness of the population
+ * @param NS number of solutions for a data type
+ * @param DIM number of dimensions for a data type
+ * @param iterations number of iterations to run the algorithm for
+ * @param myData Data structure pointer for initializing the bounds and which function to run
+ * @param fitnessCounter count how many times the fitness function was called
+ * @param myDA the DA structure
+*/
 void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fitnessCounter, FILE *fileOut) {
     // start the clock
     clock_t start;
@@ -124,7 +151,7 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
                     updateStepPosition2(myDA, myData, i, DIM);
                 } else {
                     // perform random walk
-                    randomWalk(myDA, myData, i, 0, DIM);
+                    randomWalk(myDA, myData, i, DIM);
                 }
             } else {
                 updateStepPosition(myDA, myData, i, DIM);
@@ -180,6 +207,13 @@ void startDA(DA *myDA, initData *myData, int NS, int DIM, int iterations, int fi
     free(holdw);
 }
 
+/**
+ * Function that updates the weights for the DA algorithm
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param iter number of iterations for the algorithm
+ * @param maxIter max number of iterations for the algorithm
+ */
 void updateWeights(DA *myDA, initData *myData, int iter, int maxIter) {
     myDA->r = (myData->max - myData->min) / 4 + ((myData->max - myData->min) * (iter / maxIter) * 2);
     myDA->w = 0.9 - iter * ((0.9 - 0.4) / maxIter);
@@ -194,7 +228,14 @@ void updateWeights(DA *myDA, initData *myData, int iter, int maxIter) {
     myDA->e = myDA->weight;
 }
 
-// find the neighboring solutions
+/**
+ * Function that finds the neighboring solutions
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param NS number of solutions for a data type
+ * @param DIM number of dimensions for a data type
+ */
 void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
     int index = 0;
     myDA->numNeighbors = 0;
@@ -212,12 +253,27 @@ void findNeighbors(DA *myDA, initData *myData, int i, int DIM, int NS) {
     }
 }
 
+/**
+ * Function that finds the distances between the dragonflies
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param j the next dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void distance(DA *myDA, initData *myData, int i, int j, int DIM) {
     for (int k = 0; k < DIM; k++) {
         myDA->o[k] = sqrt(pow((myData->population[i][k] - myData->population[j][k]), 2));
     }
 }
 
+/**
+ * Function that calculates the separation factor
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void separation(DA *myDA, initData *myData, int DIM, int i) {
     if (myDA->numNeighbors > 1) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
@@ -231,6 +287,12 @@ void separation(DA *myDA, initData *myData, int DIM, int i) {
     }
 }
 
+/**
+ * Function that calculates the alignment factor
+ * @param myDA the DA structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void alignment(DA *myDA, int DIM, int i) {
     if (myDA->numNeighbors > 1) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
@@ -248,6 +310,13 @@ void alignment(DA *myDA, int DIM, int i) {
     }
 }
 
+/**
+ * Function that calculates the cohesion factor
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void cohesion(DA *myDA, initData *myData, int DIM, int i) {
     if (myDA->numNeighbors > 1) {
         for (int j = 0; j < myDA->numNeighbors; ++j) {
@@ -268,6 +337,13 @@ void cohesion(DA *myDA, initData *myData, int DIM, int i) {
     }
 }
 
+/**
+ * Function that calculates the distraction factor
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void distraction(DA *myDA, initData *myData, int i, int DIM) {
     distance(myDA, myData, i, myDA->enemyPos, DIM);
     if (lessR2(myDA, DIM)) {
@@ -277,6 +353,13 @@ void distraction(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
+/**
+ * Function that calculates the attraction factor
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void attraction(DA *myDA, initData *myData, int i, int DIM) {
     distance(myDA, myData, i, myDA->foodPos, DIM);
     if (lessR2(myDA, DIM)) {
@@ -286,7 +369,13 @@ void attraction(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
-
+/**
+ * Function that updates the velocity vector and population
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void updateStepPosition(DA *myDA, initData *myData, int i, int DIM) {
     for (int t = 0; t < DIM; ++t) {
         // velocity matrix
@@ -308,6 +397,13 @@ void updateStepPosition(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
+/**
+ * Function that updates the velocity vector and population
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
 void updateStepPosition2(DA *myDA, initData *myData, int i, int DIM) {
     for (int t = 0; t < DIM; ++t) {
         // velocity matrix
@@ -328,8 +424,12 @@ void updateStepPosition2(DA *myDA, initData *myData, int i, int DIM) {
     }
 }
 
-// if our vector distance is within the radius of our population
-// then the vector is within the distance of our population
+/**
+ * if our vector distance is within the radius of our population
+ * then the vector is within the distance of our population
+ * @param myDA the DA structure pointer
+ * @param DIM number of dimensions for a data type
+ */
 int lessR(DA *myDA, int DIM) {
     int counter = 0;
     for (int i = 0; i < DIM; ++i) {
@@ -343,6 +443,12 @@ int lessR(DA *myDA, int DIM) {
     return 0;
 }
 
+/**
+ * if our vector distance is within the radius of our population
+ * then the vector is within the distance of our population
+ * @param myDA the DA structure pointer
+ * @param DIM number of dimensions for a data type
+ */
 int lessR2(DA *myDA, int DIM) {
     int counter = 0;
     for (int i = 0; i < DIM; ++i) {
@@ -356,6 +462,12 @@ int lessR2(DA *myDA, int DIM) {
     return 0;
 }
 
+/**
+ * if our vector distance is within the radius of our population
+ * then the vector is within the distance of our population
+ * @param myDA the DA structure pointer
+ * @param DIM number of dimensions for a data type
+ */
 int greaterR3(DA *myDA, int DIM) {
     for (int i = 0; i < DIM; ++i) {
         if (myDA->o[i] > myDA->r) {
@@ -365,7 +477,14 @@ int greaterR3(DA *myDA, int DIM) {
     return 0;
 }
 
-void randomWalk(DA *myDA, initData *myData, int i, int j, int DIM) {
+/**
+ * Function that updates the population using Random Walk
+ * @param myDA the DA structure pointer
+ * @param myData Data structure pointer
+ * @param i the current dragonfly
+ * @param DIM number of dimensions for a data type
+ */
+void randomWalk(DA *myDA, initData *myData, int i, int DIM) {
     for (int t = 0; t < DIM; ++t) {
         myData->population[i][t] = myData->population[i][t] + levyFlight(DIM) * myData->population[i][t];
         myDA->step[i][t] = 0;
@@ -376,6 +495,10 @@ void randomWalk(DA *myDA, initData *myData, int i, int j, int DIM) {
     }
 }
 
+/**
+ * Function that calculates a part of the random walk equation
+ * @param DIM number of dimensions for a data type
+ */
 double levyFlight(int DIM) {
     double beta = 1.5;
     double rand = genrand_real1();
@@ -388,6 +511,10 @@ double levyFlight(int DIM) {
     return o;
 }
 
+/**
+ * Function that calculates the factorial of a number
+ * @param DIM number of dimensions for a data type
+ */
 int factorial(int DIM) {
     double fact = 1;
     for (int i = 1; i <= DIM; i++) {

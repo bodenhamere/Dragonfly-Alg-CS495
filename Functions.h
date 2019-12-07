@@ -1,7 +1,3 @@
-//
-// Created by emyli on 10/16/2019.
-//
-
 #ifndef DA_495_FUNCTIONS_H
 #define DA_495_FUNCTIONS_H
 /**
@@ -10,11 +6,10 @@
 /**
  * @author Emily Bodenhamer
  *  CWU ID 41119306
- *  CS 471 Optimization Project 4
- *  Date 5/10/2019
+ *  CS 495
+ *  Date 9/15/2019
  *
- *  This project implements three meta-heuristic optimization algorithms.
- *  Particle Swarm Optimization (PSO), Firefly Algorithm (FA), and Harmony Search Algorithm (HS).
+ *  This project implements the Dragonfly meta-heuristic optimization algorithm.
  *
  */
 
