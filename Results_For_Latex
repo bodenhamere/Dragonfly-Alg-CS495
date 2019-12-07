@@ -1,0 +1,67 @@
+%----
+%
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[]
+\centering
+\caption{Dragonfly Algorithm Best Solution Analytic Over 30 Experimentations}
+\label{tab:my-table}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+\multicolumn{1}{|c|}{f(x)} & Average & Standard Deviation & Median & Range & Time (ms) & Function Call \\ \hline
+Schwefel & -117210.5104 & 229928.4593 & -46395.77318 & 3335693.265 & 4210.066667 & 10000 \\ \hline
+DeJong 1 & 17224.88395 & 23781.01372 & 3685.608538 & 69344.99448 & 4.21E+03 & 10000 \\ \hline
+Rosenbrocks Saddle & 5164611101 & 9281541580 & 22216914.64 & 33809277825 & 4268.6 & 10000 \\ \hline
+Rastrigin & 451901.4719 & 631267.2083 & 57672.88822 & 1909735.49 & 7081.457627 & 10000 \\ \hline
+Griewangk & 104.6888714 & 145.8502238 & 14.0767555 & 426.500918 & 4262.766667 & 10000 \\ \hline
+Sine Envelope Sine Wave & -22.11285496 & 2.736525247 & -21.920334 & 10.388126 & 4369.7 & 10000 \\ \hline
+Stretch V Sine Wave & -154.4883816 & 109.7962651 & -129.062768 & 553.474658 & 4377.1 & 10000 \\ \hline
+Ackley One & 140.0012477 & 149.7402539 & 58.458612 & 458.433819 & 4.30E+03 & 10000 \\ \hline
+Ackley Two & 225.782694 & 177.9501781 & 190.543691 & 525.566853 & 4339.9 & 10000 \\ \hline
+Egg Holder & -220615.0498 & 492288.211 & -79718.7173 & 4672632.688 & 4251.6 & 10000 \\ \hline
+Rana & -177374.0414 & 311840.0009 & -60907.84317 & 1928129.369 & 4297.8 & 10000 \\ \hline
+Pathological & -4.775482427 & 3.499182693 & -5.652142 & 17.11091 & 4351.666667 & 10000 \\ \hline
+Michalewicz & -5.094057729 & 0.780102441 & -5.04517 & 4.146122 & 4270.6 & 10000 \\ \hline
+Masters Cosine Wave & -11.12432776 & 10.9795787 & -4.724859 & 27.680931 & 4372.133333 & 10000 \\ \hline
+Quartic & 777044380.3 & 1361148515 & 8213336.517 & 4989970681 & 4223.033333 & 10000 \\ \hline
+Levy & 214.9503487 & 261.9944889 & 55.0614835 & 751.587675 & 4228.166667 & 10000 \\ \hline
+Step & 109.3108829 & 174.6024219 & 25.81832 & 656.797013 & 4239.066667 & 10000 \\ \hline
+Alpine & 2598.956233 & 5224.715532 & 127.086666 & 23371.08988 & 4353 & 10000 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+
+%-
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[]
+\centering
+\caption{Dragonfly Algorithm Worst Solution Analytic over 30 Experimentations}
+\label{tab:my-table}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+\multicolumn{1}{|c|}{f(x)} & Average & Standard Deviation & Median & Range & Time (ms) & Function Call \\ \hline
+Schwefel & 124149.4718 & 160351.4575 & 62851.17984 & 1166541.047 & 4210.066667 & 10000 \\ \hline
+DeJong 1 & 1.04E+11 & 8.41E+11 & 329805054.2 & 1.44E+13 & 4.21E+03 & 10000 \\ \hline
+Rosenbrocks Saddle & 3.08E+23 & 2.23E+24 & 9.70E+18 & 4.49E+25 & 4268.6 & 10000 \\ \hline
+Rastrigin & 1.35E+12 & 5.76E+12 & 11427069278 & 7.91E+13 & 7081.457627 & 10000 \\ \hline
+Griewangk & 1192691005 & 12858081342 & 3441358.275 & 2.33E+11 & 4262.766667 & 10000 \\ \hline
+Sine Envelope Sine Wave & -7.741083406 & 1.081377941 & -7.912 & 4.9543 & 4369.7 & 10000 \\ \hline
+Stretch V Sine Wave & 214.5287284 & 120.1828417 & 172.666305 & 495.685136 & 4377.1 & 10000 \\ \hline
+Ackley One & 52023.09781 & 254506.3201 & 11178.20719 & 4142262.036 & 4.30E+03 & 10000 \\ \hline
+Ackley Two & 613.591723 & 47.47513804 & 615.25907 & 28.303451 & 4339.9 & 10000 \\ \hline
+Egg Holder & 184412.1325 & 3.25E+05 & 77065.28073 & 4.90E+06 & 4251.6 & 10000 \\ \hline
+Rana & 178301.427 & 323752.3816 & 58852.68211 & 2144793.041 & 4297.8 & 10000 \\ \hline
+Pathological & 15.65014188 & 1.277669702 & 15.628011 & 3.409773 & 4351.666667 & 10000 \\ \hline
+Michalewicz & 5.029507154 & 0.728390521 & 4.952429 & 3.833737 & 4270.6 & 10000 \\ \hline
+Masters Cosine Wave & 5.900066699 & 4.656794734 & 4.616048 & 15.580359 & 4372.133333 & 10000 \\ \hline
+Quartic & 3.24E+22 & 3.96E+23 & 9.95E+17 & 1.29E+25 & 4223.033333 & 10000 \\ \hline
+Levy & 179986301.1 & 906627160.6 & 3507284.253 & 13486987171 & 4228.166667 & 10000 \\ \hline
+Step & 177922.9258 & 516934.5116 & 34578.20732 & 5730651.918 & 4239.066667 & 10000 \\ \hline
+Alpine & 20376133416 & 1.02E+11 & 197308074.1 & 1.75E+12 & 4353 & 10000 \\ \hline
+\end{tabular}%
+}
+\end{table}
